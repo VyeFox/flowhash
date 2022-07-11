@@ -4,12 +4,12 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "flowhash"
+version = "0.0.0"
 authors = [{name = "Violet Emmott", email = "violet.emmott@gmail.com"}]
 description = "Hashing algorythm where the digest is executed as control flow instructions."
 readme = "README.md"
 license = {file = "LICENSE"}
 classifiers = ["License :: OSI Approved :: MIT License", "Programming Language :: Python :: 3.10"]
-dynamic = ["version", "description"]
 
 [project.urls]
 Home = "https://github.com/VyeFox/flowhash"
