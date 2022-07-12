@@ -4,7 +4,6 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "flowhash"
-version = "0.0.0"
 authors = [{name = "Violet Emmott", email = "violet.emmott@gmail.com"}]
 description = "Hashing algorythm where the digest is executed as control flow instructions."
 readme = "README.md"
