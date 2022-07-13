@@ -8,21 +8,6 @@ import flowhash
 
 def main():
 
-    # no - throw test for default hash combiner
-    def test_default_hash_op(bit_count, runs):
-        print(f"\nTesting default hash combiner {bit_count}")
-        combiner = flowhash.FlowDigest.simple_hash_op(bit_count)
-        for i in range(runs):
-            state = random.randrange(0, 1 << bit_count)
-            update = random.randrange(0, 1 << bit_count)
-            # state #= update :: state = hash_op(state, update)
-            new_state = None
-            try:
-                new_state = combiner(state, update)
-            except Exception as ex:
-                print(f"\n::: FAIL ::: Default hash combiner ({bit_count}) failed on trial {i} with state ({state}) and update ({update}) with exception: {ex}")
-            print(f"Default hash combiner ({bit_count}) trial {i} with state ({state}) and update ({update}) successfully returned {new_state}")
-
     # compound main use case test
     def flow_digest_compound_test(address_size: int) -> None:
         flow = None
@@ -44,10 +29,10 @@ def main():
         print(f"FlowDigest over range(1 << {address_size}) executed successfully.")
 
     # singleton flowhash test (address_size = 0)
-    def flow_digest_singleton_test(hash_op) -> None:
+    def flow_digest_singleton_test() -> None:
         flow = None
         try:
-            flow = flowhash.FlowDigest(0, 256, [0], hash_op)
+            flow = flowhash.FlowDigest(0, 256, [0])
         except Exception as ex:
             print(f"::: FAIL ::: Creation of singleton FlowDigest failed with exception: {ex}")
             return None
@@ -75,14 +60,12 @@ def main():
     # testing body
     print("Running tests...")
 
-    test_default_hash_op(256, 64)
-
     print("\nTesting FlowDigest for different address sizes")
     for i in range(8):
         flow_digest_compound_test(i)
 
     print("\nTesting singleton FlowDigest")
-    flow_digest_singleton_test(flowhash.FlowDigest.simple_hash_op(256))
+    flow_digest_singleton_test()
 
     print("\nTesting flowhash function")
     flowhash_hash_test(1)

@@ -1,32 +1,11 @@
-from atexit import register
 import time
 from typing import Any, Callable, Generic, Iterator, List, SupportsIndex, TypeVar
-from functools import reduce
-from operator import xor
 
 
 T = TypeVar('T')
 
 
 class FlowDigest(Generic[T]):
-
-
-    @staticmethod
-    def simple_hash_op(size: int) -> Callable[[T, T], T]:
-        def hash_op(a: int, b: int) -> int:
-            for _ in [None] * size:
-                if a & 1:
-                    # if 1 prefer 0s
-                    (b, a) = ((b + a - 1) % (1 << size), a & b)
-                else:
-                    # if 0 prefer 1s
-                    (b, a) = ((b - a + 1) % (1 << size), a | b)
-                # clylic shift
-                a <<= 1
-                if (a & (1 << size)): a += 1
-                a %= 1 << size
-            return a
-        return hash_op
 
 
     def __init__(self, address_size: int, bit_count: int, digest: List[T] = None, hash_op: Callable[[T, T], T] = None, fold_register: int = 0):
@@ -43,7 +22,7 @@ class FlowDigest(Generic[T]):
 
         # default hash_op is simple_hash_op
         if hash_op is None:
-            hash_op = FlowDigest.simple_hash_op(bit_count)
+            hash_op = lambda x, y: (x + y + 1) % (1 << bit_count)
 
         # const props
         self.address_size = address_size
@@ -94,7 +73,7 @@ class FlowDigest(Generic[T]):
             for i in output_registers: self.state_registers[i] = self.hash_op(self.state_registers[i], self.digest[self.instruction_address])
             # incriment memory address
             self.instruction_address += 1
-            self.instruction_address %= 2 ** self.address_size
+            self.instruction_address %= (1 << self.address_size)
         # invert input and output for final churn, *input_registers #= x #= fold, *output_registers
         input_value = self.fold_register
         for i in output_registers: input_value ^= self.state_registers[i]
@@ -128,10 +107,10 @@ class FlowDigest(Generic[T]):
         return item in self.digest
 
 
-def flowhash(bit_count: int, digest: List[T], hash_op: Callable[[T, T], T] = None) -> T:
+def flowhash(bit_count: int, digest: List[T], juice: int = 1, hash_op: Callable[[T, T], T] = None) -> T:
     digest = digest[:]
     if hash_op is None:
-        hash_op = FlowDigest.simple_hash_op(bit_count)
+        hash_op = lambda x, y: (x + y + 1) % (1 << bit_count)
     size = len(digest)
     if size > 2 ** bit_count:
         raise ValueError(f"digest length ({size}) must be <= 2 ** bit_count ({bit_count})")
@@ -145,12 +124,12 @@ def flowhash(bit_count: int, digest: List[T], hash_op: Callable[[T, T], T] = Non
             digest[:section_size] = []
             imperative_digest = FlowDigest(address_size=i, bit_count=bit_count, digest=section, hash_op=hash_op, fold_register=result)
             start = time.time()
-            result = imperative_digest(steps=section_size)
+            result = imperative_digest(steps=(section_size * juice))
             print(f"executed section of size {section_size} in {time.time() - start} seconds")
     return result
     
 
-def curried_flowhash(bit_count: int, hash_op: Callable[[T, T], T] = None) -> Callable[[List[T]], T]:
-    return lambda digest: flowhash(bit_count, digest, hash_op)
+def curried_flowhash(bit_count: int, juice: int = 1, hash_op: Callable[[T, T], T] = None) -> Callable[[List[T]], T]:
+    return lambda digest: flowhash(bit_count, digest, juice, hash_op)
     
 
