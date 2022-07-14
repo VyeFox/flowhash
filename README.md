@@ -2,6 +2,14 @@
 
 Python3 hashing algorythm where the digest is executed as control flow instructions.
 
+## Info
+
+This repository exists to document the algorithm and tests is validity as a hashing algorithm.
+
+The implimentation provided is not meant to be efficient, and as it is currently, it is not.
+
+This sadly does mean as of right now (07-14-2022) certain tests of the algorithm will not adequately test its security.
+
 ## Story
 
 Hashing algorythms are defined by the following 2 properties:

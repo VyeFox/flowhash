@@ -123,9 +123,7 @@ def flowhash(bit_count: int, digest: List[T], juice: int = 1, hash_op: Callable[
             section = digest[:section_size]
             digest[:section_size] = []
             imperative_digest = FlowDigest(address_size=i, bit_count=bit_count, digest=section, hash_op=hash_op, fold_register=result)
-            start = time.time()
             result = imperative_digest(steps=(section_size * juice))
-            print(f"executed section of size {section_size} in {time.time() - start} seconds")
     return result
     
 

@@ -58,7 +58,7 @@ def main():
         print(f"flowhash(256, [{digest_length}...]) executed successfully with value {value}")
 
     # testing body
-    print("Running tests...")
+    print("Testing hash execution...")
 
     print("\nTesting FlowDigest for different address sizes")
     for i in range(8):
