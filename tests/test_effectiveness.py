@@ -21,22 +21,22 @@ def main():
             print(f"Pattern {pattern} produced distribution {hash_modulo_buckets[modulo]} for modulo {modulo} over {max} iterations. (expected value: {max/modulo})")
             print(f"This sampled distribution has chi-square value {chi} and {modulo - 1} degrees of freedom.")
 
-    # test that the hash is sensitive to changes in the digest
-    def digest_sensitivity_test(varients: int, digest_length: int, modulos: list) -> None:
+    # test that the hash is sensitive to changes in the input
+    def input_sensitivity_test(varients: int, input_length: int, modulos: list) -> None:
         hash_modulo_buckets = {modulo: [0] * modulo for modulo in modulos}
-        base_digest = [random.randrange(0, 1 << 256) for _ in [None] * digest_length]
+        base_input = [random.randrange(0, 1 << 256) for _ in [None] * input_length]
         for i in range(0, varients):
-            place = random.randrange(0, digest_length)
+            place = random.randrange(0, input_length)
             bit = (1 << random.randrange(0, 256))
-            base_digest[place] = base_digest[place] ^ bit # flip a bit
-            mh = flowhash.flowhash(255, base_digest)
+            base_input[place] = base_input[place] ^ bit # flip a bit
+            mh = flowhash.flowhash(255, base_input)
             for modulo in modulos:
                 hash_modulo_buckets[modulo][mh % modulo] = hash_modulo_buckets[modulo][mh % modulo] + 1
-            base_digest[place] = base_digest[place] ^ bit # flip the bit back
+            base_input[place] = base_input[place] ^ bit # flip the bit back
         for modulo in modulos:
             expected = varients / modulo
             chi = sum([(bucket - expected) ** 2 / expected for bucket in hash_modulo_buckets[modulo]])
-            print(f"Digest produced distribution {hash_modulo_buckets[modulo]} for modulo {modulo} over {varients} iterations. (expected value: {varients/modulo})")
+            print(f"Input produced distribution {hash_modulo_buckets[modulo]} for modulo {modulo} over {varients} iterations. (expected value: {varients/modulo})")
             print(f"This sampled distribution has chi-square value {chi} and {modulo - 1} degrees of freedom.")
 
     # testing body
@@ -69,15 +69,15 @@ def main():
 
     print("\nSensitivity Testing")
 
-    digest_sensitivity_test(iters, 64, mods)
-    digest_sensitivity_test(iters, 64, mods)
-    digest_sensitivity_test(iters, 64, mods)
-    digest_sensitivity_test(iters, 64, mods)
+    input_sensitivity_test(iters, 64, mods)
+    input_sensitivity_test(iters, 64, mods)
+    input_sensitivity_test(iters, 64, mods)
+    input_sensitivity_test(iters, 64, mods)
 
-    digest_sensitivity_test(iters, 64, mods)
-    digest_sensitivity_test(iters, 64, mods)
-    digest_sensitivity_test(iters, 64, mods)
-    digest_sensitivity_test(iters, 64, mods)
+    input_sensitivity_test(iters, 64, mods)
+    input_sensitivity_test(iters, 64, mods)
+    input_sensitivity_test(iters, 64, mods)
+    input_sensitivity_test(iters, 64, mods)
 
 
 if __name__ == "__main__":

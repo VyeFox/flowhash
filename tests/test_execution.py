@@ -9,63 +9,63 @@ import flowhash
 def main():
 
     # compound main use case test
-    def flow_digest_compound_test(address_size: int) -> None:
+    def flow_hash_compound_test(address_size: int) -> None:
         flow = None
         try:
-            flow = flowhash.FlowDigest(address_size, 256, list(range(1 << address_size)))
+            flow = flowhash.FlowHash(address_size, 256, list(range(1 << address_size)))
         except Exception as ex:
-            print(f"::: FAIL ::: Creation of FlowDigest over range(1 << {address_size}) failed with exception: {ex}")
+            print(f"::: FAIL ::: Creation of FlowHash over range(1 << {address_size}) failed with exception: {ex}")
             return None
         try:
             flow.execute()
         except Exception as ex:
-            print(f"::: FAIL ::: Execution of FlowDigest over range(1 << {address_size}) failed with exception: {ex}")
+            print(f"::: FAIL ::: Execution of FlowHash over range(1 << {address_size}) failed with exception: {ex}")
             return None
         try:
             flow.execute()
         except Exception as ex:
-            print(f"::: FAIL ::: Aditional execution of FlowDigest over range(1 << {address_size}) failed with exception: {ex}")
+            print(f"::: FAIL ::: Aditional execution of FlowHash over range(1 << {address_size}) failed with exception: {ex}")
             return None
-        print(f"FlowDigest over range(1 << {address_size}) executed successfully.")
+        print(f"FlowHash over range(1 << {address_size}) executed successfully.")
 
     # singleton flowhash test (address_size = 0)
-    def flow_digest_singleton_test() -> None:
+    def flow_hash_singleton_test() -> None:
         flow = None
         try:
-            flow = flowhash.FlowDigest(0, 256, [0])
+            flow = flowhash.FlowHash(0, 256, [0])
         except Exception as ex:
-            print(f"::: FAIL ::: Creation of singleton FlowDigest failed with exception: {ex}")
+            print(f"::: FAIL ::: Creation of singleton FlowHash failed with exception: {ex}")
             return None
         print(str(flow))
         value = None
         try:
             value = flow.execute()
         except Exception as ex:
-            print(f"::: FAIL ::: Execution of singleton FlowDigest failed with exception: {ex}")
+            print(f"::: FAIL ::: Execution of singleton FlowHash failed with exception: {ex}")
             return None
         print(str(flow))
-        print(f"Singleton FlowDigest executed successfully with value {value}")
+        print(f"Singleton FlowHash executed successfully with value {value}")
 
     # flowhash function test
-    def flowhash_hash_test(digest_length) -> None:
-        digest = [random.randrange(0, 1 << 256) for _ in [None] * digest_length]
+    def flowhash_hash_test(input_length) -> None:
+        hash_input = [random.randrange(0, 1 << 256) for _ in [None] * input_length]
         value = None
         try:
-            value = flowhash.flowhash(256, digest)
+            value = flowhash.flowhash(256, hash_input)
         except Exception as ex:
-            print(f"::: FAIL ::: flowhash(256, [{digest_length}...]) failed with exception: {ex}")
+            print(f"::: FAIL ::: flowhash(256, [{input_length}...]) failed with exception: {ex}")
             return None
-        print(f"flowhash(256, [{digest_length}...]) executed successfully with value {value}")
+        print(f"flowhash(256, [{input_length}...]) executed successfully with value {value}")
 
     # testing body
     print("Testing hash execution...")
 
-    print("\nTesting FlowDigest for different address sizes")
+    print("\nTesting FlowHash for different address sizes")
     for i in range(8):
-        flow_digest_compound_test(i)
+        flow_hash_compound_test(i)
 
-    print("\nTesting singleton FlowDigest")
-    flow_digest_singleton_test()
+    print("\nTesting singleton FlowHash")
+    flow_hash_singleton_test()
 
     print("\nTesting flowhash function")
     flowhash_hash_test(1)

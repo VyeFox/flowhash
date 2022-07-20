@@ -1,6 +1,6 @@
 # FlowhHash
 
-A generic python3 hashing algorythm where the digest is executed as control flow instructions.
+A generic python3 hashing algorythm where the input is executed as control flow instructions.
 
 The way that the hash combines values together is definable by the user and partially determines the security of the hash.
 
@@ -18,11 +18,11 @@ There are future plans to define a more efficient implementation in another lang
 
 ## Tests
 
-Due to the performance limitations detailed above, the following tests do not operate on digests longer than 128. (4096 bytes using 256 bit chunks)
+Due to the performance limitations detailed above, the following tests do not operate on inputs longer than 128. (4096 bytes using 256 bit chunks)
 
 ### Pattern Destruction Testing
 
-Chi squared testing of patterned input digests against a discrete uniform distribution yields inconclusive but promising results.
+Chi squared testing of patterned input against a discrete uniform distribution yields inconclusive but promising results.
 
 The p-values are: [
     0.05, 0.05, 0.075, 0.1, 0.1, 0.1, 0.1, 0.15,
@@ -39,17 +39,17 @@ Through analysing the actual distributions that are being tested shows no patter
 
 ### Sensitivity Testing
 
-Chi squared testing of subtly different input digests against a discrete uniform distribution produces consistently adhering results.
+Chi squared testing of subtly different input against a discrete uniform distribution produces consistently adhering results.
 
 This result is unsurprising, but still nesacarry to test the security of the algorithm.
 
 ## Story
 
 Hashing algorythms are defined by the following 2 properties:
-* All of the digest is utilized in the hashing process
+* All of the input is utilized in the hashing process
 * Small changes to the input data will result in wildly different results
 
-I noticed that one way to achive the second property is to let the digest determine the flow of the hashing process.
+I noticed that one way to achive the second property is to let the input determine the flow of the hashing process.
 The first property however would require that all data had the ability to change the flow of the hashing process.
 This is potentially self destructive, as letting all data change the flow of the hashing process could result in data being skipped over, and hence left out of the hash.
 
